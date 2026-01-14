@@ -193,14 +193,64 @@ allReels.addEventListener('click',(dets)=>{
     }
     addData()
   }
-  if(dets.target.className=='mute'){
-    if(!reels[dets.target.id].ismuted){
-      reels[dets.target.id].ismuted=true
-    }
-    else{
-      reels[dets.target.id].ismuted=false
-    }
-    addData()
-  }
-  
+  // if(dets.target.className=='mute'){
+  //   if(!reels[dets.target.id].ismuted){
+  //     reels[dets.target.id].ismuted=true
+  //   }
+    
+  //   else{
+  //     reels[dets.target.id].ismuted=false
+  //   }
+    
+  //   addData()
+  // }
+  if (dets.target.className == "mute") {
+  const id = dets.target.id;
+  const videos = document.querySelectorAll(".vedio");
+
+  videos.forEach((v, i) => {
+    if (i !== id) v.muted = true;
+  });
+
+  videos[id].muted = !videos[id].muted;
+}
+
 })
+
+let activeIndex = 0;
+
+function forceSingleVideo(index) {
+  const videos = document.querySelectorAll(".vedio");
+
+  videos.forEach((video, i) => {
+    if (i === index) {
+      video.play().catch(()=>{});
+    } else {
+      video.pause();
+      video.muted = true;
+    }
+  });
+}
+allReels.addEventListener("scroll", () => {
+  const reelsDiv = document.querySelectorAll(".reels");
+
+  reelsDiv.forEach((reel, index) => {
+    const rect = reel.getBoundingClientRect();
+
+    if (
+      rect.top >= 0 &&
+      rect.top < window.innerHeight / 2
+    ) {
+      if (activeIndex !== index) {
+        activeIndex = index;
+        forceSingleVideo(index);
+      }
+    }
+  });
+});
+window.onload = () => {
+  forceSingleVideo(0);
+};
+
+
+
